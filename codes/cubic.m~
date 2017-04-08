@@ -1,0 +1,60 @@
+function cubic(a,b,c,d)
+ 
+min_re = -2;% minimum value on real axis
+max_re = 3;% maximum value on real axis
+min_im = -3;% minimum value on imaginary axis
+max_im = 3;% maximum value on imaginary axis
+n_re = 100;
+n_im = 100;
+tol = 0.01;
+coeff = [a b c d];
+polyroots = roots(coeff);% calculating the roots and storing them in vector 
+r1=polyroots(1);% assigning the value of first root to r1
+r2=polyroots(2);% assigning the value of second root to r2
+r3=polyroots(3);%assigning the value of third root to r3
+max_steps=30;% maximum no. of iteration 
+
+delta_re = (max_re-min_re)/n_re; 
+delta_im = (max_im-min_im)/n_im;
+x = min_re:delta_re:max_re; 
+y = min_im:delta_im:max_im;
+[X,Y]=meshgrid(x,y);% generating the mesh grid
+
+Z = X + i*Y;
+
+for j = 1:n_im + 1
+for k = 1:n_re + 1
+
+z = Z(j,k);
+
+flag = 0;
+p=0;
+while (flag <= max_steps) && (p==0)
+z = z - (a*z.^3 + b*z.^2 + c*z +d)./(3*a*z.^2 + 2*b*z + c);%applying newton formula
+if norm(a*z.^3 + b*z.^2 + c*z +d) <= tol%condition checking whether any root has come or not
+p=1;
+end
+end
+if norm(z-r1)<=tol
+Z(j,k)=0;
+
+elseif norm(z-r2)<=tol
+Z(j,k)=123;
+
+elseif norm(z-r3)<=tol
+Z(j,k)=255;
+
+end
+end
+end
+axis([-2 3 -3 3]);
+brighten(0.5);
+
+pcolor(X,Y,Z)
+
+shading flat;
+
+
+endfunction
+
+
